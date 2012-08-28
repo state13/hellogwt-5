@@ -2,9 +2,9 @@ package com.hellogwt.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -22,6 +22,8 @@ public class HelloGWTWidget extends Composite {
     private static HelloGWTWidgetUiBinder uiBinder = GWT.create(HelloGWTWidgetUiBinder.class);
 
     private GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+
+    private AsyncCallback<Void> callback = null;
 
     @UiField
     TextBox authorTextBox;
@@ -44,8 +46,43 @@ public class HelloGWTWidget extends Composite {
         refreshGreetingsTable();
     }
 
+    @UiHandler("addButton")
+    void handleAddButtonClick(ClickEvent ce) {
+        if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
+            greetingService.getGreeting(textTextBox.getText(), new AsyncCallback<Greeting>() {
+                public void onFailure(Throwable caught) {
+                    Window.alert("ERROR: Cannot find greeting!");
+                }
+
+                public void onSuccess(Greeting result) {
+                    if (result == null) {
+                        greetingService.addGreeting(authorTextBox.getText(), textTextBox.getText(), callback);
+                    } else {
+                        Window.alert("Greeting already exists!");
+                    }
+                }
+            });
+        } else {
+            Window.alert("\"Author\" and \"Text\" fields cannot be empty!");
+        }
+    }
+
+    @UiHandler("updateButton")
+    void handleUpdateButtonClick(ClickEvent ce) {
+        if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
+            greetingService.updateGreeting(authorTextBox.getText(), textTextBox.getText(), callback);
+        } else {
+            Window.alert("\"Author\" and \"Text\" fields cannot be empty!");
+        }
+    }
+
+    @UiHandler("deleteButton")
+    void handleDeleteButtonClick(ClickEvent ce) {
+        greetingService.deleteGreeting(textTextBox.getText(), callback);
+    }
+
     private void initHandlers() {
-        final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+        callback = new AsyncCallback<Void>() {
             public void onFailure(Throwable caught) {
                 Window.alert("ERROR: Cannot edit greetings!");
             }
@@ -54,44 +91,6 @@ public class HelloGWTWidget extends Composite {
                 refreshGreetingsTable();
             }
         };
-
-        addButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent clickEvent) {
-                if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
-                    greetingService.getGreeting(textTextBox.getText(), new AsyncCallback<Greeting>() {
-                        public void onFailure(Throwable caught) {
-                            Window.alert("ERROR: Cannot find greeting!");
-                        }
-
-                        public void onSuccess(Greeting result) {
-                            if (result == null) {
-                                greetingService.addGreeting(authorTextBox.getText(), textTextBox.getText(), callback);
-                            } else {
-                                Window.alert("Greeting already exists!");
-                            }
-                        }
-                    });
-                } else {
-                    Window.alert("\"Author\" and \"Text\" fields cannot be empty!");
-                }
-            }
-        });
-
-        updateButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
-                    greetingService.updateGreeting(authorTextBox.getText(), textTextBox.getText(), callback);
-                } else {
-                    Window.alert("\"Author\" and \"Text\" fields cannot be empty!");
-                }
-            }
-        });
-
-        deleteButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                greetingService.deleteGreeting(textTextBox.getText(), callback);
-            }
-        });
     }
 
     private void refreshGreetingsTable() {
