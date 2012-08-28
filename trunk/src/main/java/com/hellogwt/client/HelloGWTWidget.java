@@ -23,7 +23,15 @@ public class HelloGWTWidget extends Composite {
 
     private GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
 
-    private AsyncCallback<Void> callback = null;
+    private AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+        public void onFailure(Throwable caught) {
+            Window.alert("ERROR: Cannot edit greetings!");
+        }
+
+        public void onSuccess(Void result) {
+            refreshGreetingsTable();
+        }
+    };
 
     @UiField
     TextBox authorTextBox;
@@ -40,8 +48,6 @@ public class HelloGWTWidget extends Composite {
 
     public HelloGWTWidget() {
         initWidget(uiBinder.createAndBindUi(this));
-
-        initHandlers();
 
         refreshGreetingsTable();
     }
@@ -79,18 +85,6 @@ public class HelloGWTWidget extends Composite {
     @UiHandler("deleteButton")
     void handleDeleteButtonClick(ClickEvent ce) {
         greetingService.deleteGreeting(textTextBox.getText(), callback);
-    }
-
-    private void initHandlers() {
-        callback = new AsyncCallback<Void>() {
-            public void onFailure(Throwable caught) {
-                Window.alert("ERROR: Cannot edit greetings!");
-            }
-
-            public void onSuccess(Void result) {
-                refreshGreetingsTable();
-            }
-        };
     }
 
     private void refreshGreetingsTable() {
