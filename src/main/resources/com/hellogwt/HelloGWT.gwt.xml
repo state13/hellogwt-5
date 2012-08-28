@@ -7,8 +7,6 @@
 
     <entry-point class='com.hellogwt.client.HelloGWT'/>
 
-    <set-property name="user.agent" value="ie6"/>
-
     <source path='client'/>
     <source path='shared'/>
 </module>
