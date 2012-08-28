@@ -53,7 +53,7 @@ public class HelloGWTWidget extends Composite {
     }
 
     @UiHandler("addButton")
-    void handleAddButtonClick(ClickEvent ce) {
+    void handleAddButtonClick(ClickEvent clickEvent) {
         if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
             greetingService.getGreeting(textTextBox.getText(), new AsyncCallback<Greeting>() {
                 public void onFailure(Throwable caught) {
@@ -74,7 +74,7 @@ public class HelloGWTWidget extends Composite {
     }
 
     @UiHandler("updateButton")
-    void handleUpdateButtonClick(ClickEvent ce) {
+    void handleUpdateButtonClick(ClickEvent clickEvent) {
         if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
             greetingService.updateGreeting(authorTextBox.getText(), textTextBox.getText(), callback);
         } else {
@@ -83,7 +83,7 @@ public class HelloGWTWidget extends Composite {
     }
 
     @UiHandler("deleteButton")
-    void handleDeleteButtonClick(ClickEvent ce) {
+    void handleDeleteButtonClick(ClickEvent clickEvent) {
         greetingService.deleteGreeting(textTextBox.getText(), callback);
     }
 
