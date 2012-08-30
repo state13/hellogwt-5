@@ -24,10 +24,12 @@ public class HelloGWTWidget extends Composite {
     private GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
 
     private AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+        @Override
         public void onFailure(Throwable caught) {
             Window.alert("ERROR: Cannot edit greetings!");
         }
 
+        @Override
         public void onSuccess(Void result) {
             refreshGreetingsTable();
         }
@@ -56,10 +58,12 @@ public class HelloGWTWidget extends Composite {
     void handleAddButtonClick(ClickEvent clickEvent) {
         if (!authorTextBox.getText().isEmpty() && !textTextBox.getText().isEmpty()) {
             greetingService.getGreeting(textTextBox.getText(), new AsyncCallback<Greeting>() {
+                @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("ERROR: Cannot find greeting!");
                 }
 
+                @Override
                 public void onSuccess(Greeting result) {
                     if (result == null) {
                         greetingService.addGreeting(authorTextBox.getText(), textTextBox.getText(), callback);
@@ -89,10 +93,12 @@ public class HelloGWTWidget extends Composite {
 
     private void refreshGreetingsTable() {
         greetingService.getGreetings(new AsyncCallback<List<Greeting>>() {
+            @Override
             public void onFailure(Throwable throwable) {
                 Window.alert("ERROR: Cannot load greetings!");
             }
 
+            @Override
             public void onSuccess(List<Greeting> greetings) {
                 fillGreetingsTable(greetings);
             }

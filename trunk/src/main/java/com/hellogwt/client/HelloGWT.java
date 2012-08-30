@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class HelloGWT implements EntryPoint {
 
+    @Override
     public void onModuleLoad() {
         HelloGWTWidget helloGWTWidget = GWT.create(HelloGWTWidget.class);
 
